@@ -7,7 +7,7 @@ breed [ jet-streams jet-stream ]
 breed [ smokes smoke ]
 patches-own [ population country-name elevation]
 smokes-own [ diffusion-rate ]
-jet-streams-own [ u-component v-component latitude longitude ]
+jet-streams-own [ u-component v-component ]
 
 to setup
   clear-all
@@ -140,35 +140,36 @@ to display-jet-streams
     let v-component-value gis:property-value vector-feature "V-component_of_wind"
 
     let longitude-value gis:property-value vector-feature "longitude"
-    ; fix
-;    if longitude-value > 180 [
-;      set longitude-value 360 - longitude-value
-;    ]
     let latitude-value gis:property-value vector-feature "latitude"
 
     let wind-location gis:project-lat-lon latitude-value longitude-value
 
-;    show word "u-component: " u-component-value
-;    show word "v-component: " v-component-value
-;    show word "longitude: " longitude
-;    show word "latitude: " latitude
 
     if not empty? wind-location [
 
       let wind-xcor item 0 wind-location
       let wind-ycor item 1 wind-location
 
-;      show word "wind-xcor: " wind-xcor
-;      show word "wind-ycor: " wind-ycor
+      set wind-xcor round(wind-xcor)
+      set wind-ycor round(wind-ycor)
 
-      create-jet-streams 1 [
-        set xcor wind-xcor
-        set ycor wind-ycor
-        set u-component u-component-value
-        set v-component v-component-value
-        set longitude longitude-value
-        set latitude latitude-value
+
+
+      ask patch wind-xcor wind-ycor [
+
+        let jet-stream-already-present count jet-streams-here
+
+        if jet-stream-already-present = 0 [
+          sprout-jet-streams 1 [
+            set xcor wind-xcor
+            set ycor wind-ycor
+            set u-component u-component-value
+            set v-component v-component-value
+            set color [10 0 0 125]
+          ]
+        ]
       ]
+
     ]
   ]
 end
