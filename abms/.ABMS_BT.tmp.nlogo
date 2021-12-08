@@ -1,11 +1,13 @@
 extensions [ gis ]
-globals [ countries-dataset ]
+globals [ countries-dataset jet-stream-dataset ]
 breed [ country-labels country-label ]
 breed [ country-vertices country-vertex ]
 breed [ smoke-sources smoke-source ]
+breed [ jet-streams jet-stream ]
 breed [ smokes smoke ]
-patches-own [ population country-name elevation ]
+patches-own [ population country-name elevation]
 smokes-own [ diffusion-rate ]
+jet-streams-own [ u-component v-component latitude longitude ]
 
 to setup
   clear-all
@@ -16,6 +18,7 @@ to setup
   set countries-dataset gis:load-dataset "data/countries.shp"
   ; Set the world envelope to the envelope of countries-dataset
   gis:set-world-envelope (gis:envelope-of countries-dataset)
+  set jet-stream-dataset gis:load-dataset "data/jet_stream_data.geojson"
 
   ; TODO: Do we stick to this shape?
   set-default-shape smokes "circle"
@@ -121,9 +124,53 @@ to drop-smoke
 
 end
 
+to go
+  diffuse_smoke
+  tick
+end
 
 to diffuse_smoke
   ask smokes [fd random-float 0.1 * diffusion-rate]
+end
+
+to display-jet-streams
+  foreach gis:feature-list-of jet-stream-dataset [ vector-feature ->
+
+    let u-component-value gis:property-value vector-feature "U-component_of_wind"
+    let v-component-value gis:property-value vector-feature "V-component_of_wind"
+
+    let longitude-value gis:property-value vector-feature "longitude"
+    ; fix
+;    if longitude-value > 180 [
+;      set longitude-value 360 - longitude-value
+;    ]
+    let latitude-value gis:property-value vector-feature "latitude"
+
+    let wind-location gis:project-lat-lon latitude-value longitude-value
+
+;    show word "u-component: " u-component-value
+;    show word "v-component: " v-component-value
+;    show word "longitude: " longitude
+;    show word "latitude: " latitude
+
+    if not empty? wind-location [
+
+      let wind-xcor item 0 wind-location
+      let wind-ycor item 1 wind-location
+
+;      show word "wind-xcor: " wind-xcor
+;      show word "wind-ycor: " wind-ycor
+
+      create-jet-streams 1 [
+        set xcor wind-xcor
+        set ycor wind-ycor
+        set u-component u-component-value
+        set v-component v-component-value
+        set longitude longitude-value
+        set latitude latitude-value
+      ]
+    ]
+  ]
 end
 
 ; Find the bounding rectangle of a country
@@ -142,14 +189,16 @@ to-report find-envelope-of-country [ input-country ]
 end
 
 
+
+
 ; Public Domain:
 ; To the extent possible under law, Uri Wilensky has waived all
 ; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-185
+242
 10
-997
+1054
 423
 -1
 -1
@@ -167,17 +216,17 @@ GRAPHICS-WINDOW
 100
 -50
 50
-1
-1
+0
+0
 1
 ticks
 30.0
 
 BUTTON
-7
-173
-177
-206
+48
+132
+218
+165
 NIL
 display-countries
 NIL
@@ -191,10 +240,10 @@ NIL
 0
 
 BUTTON
-5
-60
-175
-93
+45
+19
+215
+52
 NIL
 setup\n
 NIL
@@ -208,10 +257,10 @@ NIL
 1
 
 BUTTON
-0
-232
-170
-265
+41
+191
+211
+224
 NIL
 display-countries-using-links
 NIL
@@ -225,10 +274,10 @@ NIL
 0
 
 BUTTON
-5
-344
-185
-377
+46
+303
+226
+336
 NIL
 clear-drawing
 NIL
@@ -241,22 +290,11 @@ NIL
 NIL
 1
 
-SWITCH
-20
-115
-156
-148
-label-countries
-label-countries
-1
-1
--1000
-
 SLIDER
-1063
-51
-1235
-84
+1239
+55
+1411
+88
 smoke-size
 smoke-size
 0
@@ -268,10 +306,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1064
-116
-1239
-149
+1273
+120
+1448
+153
 amount-of-smoke
 amount-of-smoke
 0
@@ -283,10 +321,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-44
-290
-141
-323
+85
+249
+182
+282
 Drop Smoke
 drop-smoke
 NIL
@@ -300,10 +338,10 @@ NIL
 1
 
 INPUTBOX
-1068
-193
-1223
-253
+1277
+197
+1432
+257
 number-of-countries-to-bomb
 1.0
 1
@@ -311,10 +349,10 @@ number-of-countries-to-bomb
 Number
 
 BUTTON
-1084
-287
-1205
-320
+58
+568
+179
+601
 diffuse_smoke
 diffuse_smoke
 NIL
@@ -328,10 +366,10 @@ NIL
 1
 
 SLIDER
-1059
-356
-1236
-389
+1268
+360
+1445
+393
 max-diffusion-rate
 max-diffusion-rate
 0
@@ -341,6 +379,51 @@ max-diffusion-rate
 1
 NIL
 HORIZONTAL
+
+BUTTON
+99
+362
+162
+395
+go
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+48
+428
+218
+461
+display-jet-streams
+display-jet-streams
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SWITCH
+63
+76
+199
+109
+label-countries
+label-countries
+1
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -651,7 +734,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.1
+NetLogo 6.2.0
 @#$#@#$#@
 setup
 display-cities
