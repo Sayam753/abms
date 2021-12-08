@@ -5,6 +5,7 @@ breed [ country-vertices country-vertex ]
 breed [ smoke-sources smoke-source ]
 breed [ smokes smoke ]
 patches-own [ population country-name elevation ]
+smokes-own [ diffusion-rate ]
 
 to setup
   clear-all
@@ -110,7 +111,7 @@ to drop-smoke
 
        create-smokes amount-of-smoke [
        set size smoke-size
-
+       set diffusion-rate random-normal 0 max-diffusion-rate
        ; Make the smoke move out a bit from point of explosion
        set xcor x + 0.5 + random-float -1
        set ycor y + 0.5 + random-float -1
@@ -120,7 +121,14 @@ to drop-smoke
 
 end
 
+to go
+  diffuse_smoke
+  tick
+end
 
+to diffuse_smoke
+  ask smokes [fd random-float 0.1 * diffusion-rate]
+end
 
 ; Find the bounding rectangle of a country
 ; input-country : String (Country Name)
@@ -257,7 +265,7 @@ smoke-size
 smoke-size
 0
 5
-1.0
+0.5
 0.5
 1
 NIL
@@ -266,13 +274,13 @@ HORIZONTAL
 SLIDER
 1064
 116
-1236
+1239
 149
 amount-of-smoke
 amount-of-smoke
 0
-1000000
-6369.0
+3000
+1000.0
 1
 1
 NIL
@@ -305,6 +313,55 @@ number-of-countries-to-bomb
 1
 0
 Number
+
+BUTTON
+1084
+287
+1205
+320
+diffuse_smoke
+diffuse_smoke
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+1059
+356
+1236
+389
+max-diffusion-rate
+max-diffusion-rate
+0
+10
+2.5
+0.5
+1
+NIL
+HORIZONTAL
+
+BUTTON
+45
+423
+108
+456
+go
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -615,7 +672,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.0
+NetLogo 6.2.1
 @#$#@#$#@
 setup
 display-cities
