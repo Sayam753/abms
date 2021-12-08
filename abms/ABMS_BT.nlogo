@@ -5,9 +5,8 @@ breed [ country-vertices country-vertex ]
 breed [ smoke-sources smoke-source ]
 breed [ jet-streams jet-stream ]
 breed [ smokes smoke ]
-patches-own [ population country-name elevation]
+patches-own [ population country-name elevation u-component v-component ]
 smokes-own [ diffusion-rate ]
-jet-streams-own [ u-component v-component ]
 
 to setup
   clear-all
@@ -130,7 +129,19 @@ to go
 end
 
 to diffuse_smoke
-  ask smokes [fd random-float 0.1 * diffusion-rate]
+  ask smokes [
+    fd random-float 0.01 * diffusion-rate
+  ]
+  ask patches [
+    let u-component-value u-component
+    let v-component-value v-component
+
+    ask smokes-here [
+      set xcor xcor + u-component-value * 0.01
+      set ycor ycor + v-component-value * 0.01
+    ]
+
+  ]
 end
 
 to display-jet-streams
@@ -155,17 +166,9 @@ to display-jet-streams
 
       ask patch wind-xcor wind-ycor [
 
-        let jet-stream-already-present count jet-streams-here
+        set u-component u-component-value
+        set v-component v-component-value
 
-        if jet-stream-already-present = 0 [
-          sprout-jet-streams 1 [
-            set xcor wind-xcor
-            set ycor wind-ycor
-            set u-component u-component-value
-            set v-component v-component-value
-            set color [10 0 0 125]
-          ]
-        ]
       ]
 
     ]
@@ -298,7 +301,7 @@ smoke-size
 smoke-size
 0
 5
-0.5
+1.5
 0.5
 1
 NIL
@@ -313,7 +316,7 @@ amount-of-smoke
 amount-of-smoke
 0
 3000
-1000.0
+1313.0
 1
 1
 NIL
@@ -373,7 +376,7 @@ max-diffusion-rate
 max-diffusion-rate
 0
 10
-2.5
+3.5
 0.5
 1
 NIL
