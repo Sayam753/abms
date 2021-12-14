@@ -1,8 +1,6 @@
-extensions [ gis ]
-globals [ countries-dataset jet-stream-dataset ]
+extensions [ gis csv ]
+globals [ countries-dataset jet-stream-dataset sunlight-dataset]
 breed [ country-labels country-label ]
-breed [ country-vertices country-vertex ]
-breed [ smoke-sources smoke-source ]
 breed [ jet-streams jet-stream ]
 breed [ smokes smoke ]
 patches-own [ population country-name elevation u-component v-component ]
@@ -18,8 +16,10 @@ to setup
   ; Set the world envelope to the envelope of countries-dataset
   gis:set-world-envelope (gis:envelope-of countries-dataset)
   set jet-stream-dataset gis:load-dataset "data/jet_stream_data.geojson"
+  set sunlight-dataset csv:from-file "data/preprocessed_sunlight_insolation_13_ticks.csv"
 
-  ; TODO: Do we stick to this shape?
+  show item 1 sunlight-dataset
+
   set-default-shape smokes "circle"
   reset-ticks
 end
@@ -58,38 +58,6 @@ to display-population-in-patches
   [ ifelse (population > 0)
     [ set pcolor scale-color red population 500000000 100000 ]
     [ set pcolor blue ] ]
-end
-
-
-; Loading polygon data into turtles connected by links
-to display-countries-using-links
-  ask country-vertices [ die ]
-  foreach gis:feature-list-of countries-dataset [ vector-feature ->
-    foreach gis:vertex-lists-of vector-feature [ vertex ->
-      let previous-turtle nobody
-      let first-turtle nobody
-      ; By convention, the first and last coordinates of polygons
-      ; in a shapefile are the same, so we don't create a turtle
-      ; on the last vertex of the polygon
-      foreach but-last vertex [ point ->
-        let location gis:location-of point
-        ; location will be an empty list if it lies outside the
-        ; bounds of the current NetLogo world, as defined by our
-        ; current GIS coordinate transformation
-        if not empty? location
-        [ create-country-vertices 1
-          [ set xcor item 0 location
-            set ycor item 1 location
-            ifelse previous-turtle = nobody
-            [ set first-turtle self ]
-            [ create-link-with previous-turtle ]
-            set hidden? true
-            set previous-turtle self ] ] ]
-      ; Link the first turtle to the last turtle to close the polygon
-      if first-turtle != nobody and first-turtle != previous-turtle
-      [ ask first-turtle
-        [ create-link-with previous-turtle ] ] ] ]
-  display-population-in-patches
 end
 
 
@@ -257,23 +225,6 @@ NIL
 NIL
 NIL
 1
-
-BUTTON
-41
-191
-211
-224
-NIL
-display-countries-using-links
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
 
 BUTTON
 46
