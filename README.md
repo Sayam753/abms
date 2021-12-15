@@ -23,7 +23,7 @@ Issues:
 
 ### Jet Stream Data source
 
-- Jet Streams are air currents flowing at 10 KM above Earth's surface. Source: <a name="1">[1]</a>
+- Jet Streams are air currents flowing at 10 KM above Earth's surface. Source: [[1]](#abcd) 
 - The atmospheric layer at 10 KM from Earth's surface is the junction of Troposhere and Stratosphere, which is named Tropopause. Source: [Atmosphere Layers study](https://niwa.co.nz/education-and-training/schools/students/layers) by [National Institute of Water and Atmospheric Research (NIWA), New Zealand](https://niwa.co.nz/) 
 - So, the Air Current Data at Tropopause is taken from [National Centers for Environmental Prediction (NCEP), America](https://www.ncep.noaa.gov/) which form the Jet Stream Data.
 
@@ -45,4 +45,4 @@ $wind\hspace{0.1cm}vector = U i^{hat} + V j^{hat}$
 
 ## Sources
 
-[[1]](#1): [Earth Project](http://www.nims.go.kr:8080/en/about.html) by [National Institute of Meteorological Sciences (NIMS), South Korea](http://www.nims.go.kr/AE/MA/main.jsp)
+#### <a name="abcd"></a> [Earth Project](http://www.nims.go.kr:8080/en/about.html) by [National Institute of Meteorological Sciences (NIMS), South Korea](http://www.nims.go.kr/AE/MA/main.jsp)
