@@ -3,7 +3,7 @@ globals [ countries-dataset jet-stream-dataset sunlight-dataset tick-counter tem
 breed [ country-labels country-label ]
 breed [ jet-streams jet-stream ]
 breed [ smokes smoke ]
-patches-own [ population country-name elevation u-component v-component patch-temperature]
+patches-own [ population country-name elevation u-component v-component patch-temperature heat-list]
 smokes-own [ diffusion-rate ]
 
 to setup
@@ -22,8 +22,31 @@ to setup
   set-default-shape smokes "circle"
   set temperature 25
   ask patches [
+    set heat-list [0 0 0 0 0 0 0 0 0 0 0 0 0]
     set patch-temperature temperature
   ]
+
+  foreach but-first sunlight-dataset [ [ feature ] ->
+    let lon item 0 feature
+    let lat item 1 feature
+    let day item 2 feature
+    let heat item 3 feature
+
+    let xcor-ycor gis:project-lat-lon lat lon
+
+      if not empty? xcor-ycor [
+      let patch-xcor item 0 xcor-ycor
+      let patch-ycor item 1 xcor-ycor
+
+        ask patch patch-xcor patch-ycor [
+        let index day - 1
+        let past-val item index heat-list
+        set heat heat + past-val
+         set heat-list replace-item index heat-list heat
+      ]
+      ]
+  ]
+
   reset-ticks
 end
 
@@ -107,31 +130,18 @@ to throw-sunlight
 
   let noof-times-changes-made 0
   let total-change-in-temp 0
-  foreach but-first sunlight-dataset [ [ feature ] ->
-    let lon item 0 feature
-    let lat item 1 feature
-    let hour item 2 feature
-    let heat item 3 feature
-    if hour - 1 = tick-counter [
-      let xcor-ycor gis:project-lat-lon lat lon
-
-      if not empty? xcor-ycor [
-      let patch-xcor item 0 xcor-ycor
-      let patch-ycor item 1 xcor-ycor
-
-        ask patch patch-xcor patch-ycor [
-         let smoke-particles-in-patch count smokes-here
+  ask patches [
+    let smoke-particles-in-patch count smokes-here
+    let heat item tick-counter heat-list
          let heat-loss-due-to-smoke heat - smoke-albedo * (0.5 + random-float 0.5) * smoke-particles-in-patch
-         let new-temp 0.999 * patch-temperature + 0.001 * (12 + 0.05 * heat)
+         let new-temp 0.999 * patch-temperature + 0.001 * (12 + 0.005 * heat)
 
          set noof-times-changes-made noof-times-changes-made + 1
          let change-in-temp new-temp - patch-temperature
          set total-change-in-temp total-change-in-temp + change-in-temp
 
          set patch-temperature new-temp
-      ]
-      ]
-    ]
+
   ]
   let average total-change-in-temp / noof-times-changes-made
   set temperature temperature + average
