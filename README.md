@@ -1,5 +1,6 @@
-ABMS project for Group 17
+# Can Nuclear Winter solve global warming?
 
+By Group 17
 
 Data sources:
 
@@ -60,3 +61,11 @@ $wind\hspace{0.1cm}vector = U i^{hat} + V j^{hat}$
 #### <a name="4"></a> 4. [Earth Project](https://github.com/cambecc/earth/blob/master/public/libs/earth/1.0.0/products.js#L607-L631) by [National Institute of Meteorological Sciences (NIMS), South Korea](http://www.nims.go.kr/AE/MA/main.jsp)
 
 #### <a name="5"></a> 5. [GIS Netlogo docs](https://ccl.northwestern.edu/netlogo/docs/gis.html#gis:set-transformation)
+
+## Group Members
+
+Group 17
+
+- Raahul Singh: S20180010141
+- Sayam Kumar: S20180010158
+- Shubham Bhagat: S20180010166
