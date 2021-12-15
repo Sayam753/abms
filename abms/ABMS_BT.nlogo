@@ -41,8 +41,8 @@ to setup
         ask patch patch-xcor patch-ycor [
         let index day - 1
         let past-val item index heat-list
-        set heat heat + past-val
-         set heat-list replace-item index heat-list heat
+        ; set heat heat + past-val
+        set heat-list replace-item index heat-list heat
       ]
       ]
   ]
@@ -133,8 +133,8 @@ to throw-sunlight
   ask patches [
     let smoke-particles-in-patch count smokes-here
     let heat item tick-counter heat-list
-         let heat-loss-due-to-smoke heat - smoke-albedo * (0.5 + random-float 0.5) * smoke-particles-in-patch
-         let new-temp 0.999 * patch-temperature + 0.001 * (12 + 0.005 * heat)
+         set heat heat - smoke-albedo * (0.5 + random-float 0.5) * smoke-particles-in-patch
+         let new-temp 0.999 * patch-temperature + 0.001 * (12 + 0.05 * heat)
 
          set noof-times-changes-made noof-times-changes-made + 1
          let change-in-temp new-temp - patch-temperature
@@ -319,7 +319,7 @@ amount-of-smoke
 amount-of-smoke
 0
 3000
-1313.0
+2063.0
 1
 1
 NIL
@@ -433,7 +433,7 @@ smoke-albedo
 smoke-albedo
 0
 100
-50.0
+68.0
 1
 1
 NIL
