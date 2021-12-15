@@ -429,6 +429,24 @@ smoke-albedo
 NIL
 HORIZONTAL
 
+PLOT
+1065
+442
+1590
+771
+plot 1
+Ticks
+Global Temp
+0.0
+1000.0
+0.0
+30.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot temperature"
+
 @#$#@#$#@
 ## WHAT IS IT?
 
