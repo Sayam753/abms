@@ -491,18 +491,19 @@ This model is built as a tool. Things can be extended using -
 
 Sunlight data: NASA POWER Project (https://power.larc.nasa.gov/)
 
-Assumptions:
+Dataset Name: Top-Of-Atmosphere Shortwave Downward Irradiance
 
-- Sunlight data has the following features (latitude, longitude, time, insolation)
-    - Insolation has units of W/m^2 but we've directly used it to calculate temperature using formula from 'Climate Change' model without conversions.
-      Ideally you'd expect use of formulae that converts thermal energy into temperature based on heat capacity of receiving object but time doesn't permit.
-    - Time feature values range in [1, 13]. Couldn't find data description and have assumed that it is day count (day 1 - day 13).
+It provides the total solar irradiance incident (direct plus diffuse) on a horizontal plane at the top of the atmosphere (extraterrestrial radiation).
 
-- CO2 hasn't been accounted for considering model size. To counter this, we are not releasing any heat. Our assumption is that heat will anyway get trapped because of CO2 and increase temperature.
+Dataset requires preprocessing to convert from NetCDF4 format to CSV format which is done in Python.
 
-Issues:
+The dataset has the following features (latitude, longitude, time, insolation)
+- Latitude, Longitude give the location in projected space
+- Insolation has units of W/m^2, after preprocessing we were able to project the same onto patches and used it for temperature calculation.
+- Time feature values range in [1, 13] and tells the day of measurement. The dataset has 13 days of measurements.
 
-- Patch temperature and global temperature are set as the same (25) initially. We have temperature dataset that needs little preprocessing before it can be used to fix this. If time permits, that can be done.
+
+Temperature calculation is done by using the formular used in 'Climate Change Model' available in Netlogo Model Library.
 
 ### Details on Jet Streams
 
