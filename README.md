@@ -39,7 +39,14 @@ $wind\hspace{0.1cm}vector = U i^{hat} + V j^{hat}$
 
 ### Jet Stream Data Preprocessing
 
-- Longitude vary from 0 to 360 degrees and Latitudes vary from -90 to 90 degrees. Source: [[4]](#4)
+#### Convert data to geojson
+
+- The Jet Stream Data is in .anl format.
+- We used [grib2json](https://github.com/cambecc/grib2json/) library to convert .anl files to geojson so that it can be loaded in Netlogo.
+
+#### Fix Longitude scales
+
+- Longitude vary from 0 to 360 degrees and Latitudes vary from -90 to 90 degrees in the data. Source: [[4]](#4)
 - The Netlogo GIS Extension has Longitude defined from -180 to 180. Source: [[5]](#5)
 - So, the Longitude range in data is changed from (0:360 scale) to (-180:180) scale. The equation to change the scales is taken from [this stack-overflow post](https://stackoverflow.com/questions/46962288/change-longitude-from-180-to-180-to-0-to-360).
 
