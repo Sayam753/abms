@@ -120,6 +120,7 @@ to throw-sunlight
       let patch-ycor item 1 xcor-ycor
 
         ask patch patch-xcor patch-ycor [
+
          let smoke-particles-in-patch count smokes-here
          let heat-loss-due-to-smoke heat - smoke-albedo * (0.5 + random-float 0.5) * smoke-particles-in-patch
          let new-temp 0.999 * patch-temperature + 0.001 * (12 + 0.05 * heat)
